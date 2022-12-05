@@ -28,6 +28,7 @@ void loop()
 {
   if (myLoRa.available() > 0){
     int numOfBytes = myLoRa.available();
-    Serial.println("Number of incoming bytes = %d", numOfBytes);
+    Serial.print("Number of incoming bytes");
+    Serial.println(numOfBytes);
   }
 }
