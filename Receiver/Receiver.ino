@@ -10,6 +10,7 @@ String data = "";
 unsigned long previousMillis = 0;
 unsigned long interval = 15000;
 
+char dataRcvd[200];
 
 void setup()
 {
@@ -25,27 +26,8 @@ void setup()
 
 void loop()
 {
-  unsigned long currentMillis = millis();
-
-  if(currentMillis - previousMillis > interval) {
-    /* The Arduino executes this code once every second
-    *  (interval = 1000 (ms) = 1 second).
-    */
-    // Send data over LoRa
-    myLoRa.write("Hello world from Node 2");
-    
-    previousMillis = currentMillis;
-  }
-
-  while (myLoRa.available() > 0){
-    char dataRcvd = myLoRa.read();
-    if (dataRcvd == '\n'){
-      Serial.println("End of message");
-    } else
-      data += dataRcvd;
-  }
-  if (data != ""){
-    Serial.println(data);
-    data = "";
+  if (myLoRa.available() > 0){
+    int numOfBytes = myLoRa.available();
+    Serial.println("Number of incoming bytes = %d", numOfBytes);
   }
 }

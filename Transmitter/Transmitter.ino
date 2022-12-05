@@ -65,10 +65,10 @@ void loop()
     *  (interval = 1000 (ms) = 1 second).
     */
     // Send Hello world over LoRa
-    Serial.println("Start sending.....");
-    myLoRa.write("Hello world\n");
-    Serial.println("Hello world was sent\n");
-    delay(1000);
+    //Serial.println("Start sending.....");
+    //myLoRa.write("Hello world\n");
+    //Serial.println("Hello world was sent\n");
+    //delay(1000);
     // Send data over LoRa
     Serial.println("Sending data...");
     sendData();
@@ -103,9 +103,10 @@ void sendData(){
   // {"h": DoAm,"t":NhietDo,"lux":lux}
   Serial.println();
 
-  // Send data over LoRa
+  // Send Json data over LoRa
   serializeJson(doc, myLoRa);
-  myLoRa.write("\n");
+  // Send EOL
+  myLoRa.write("\r\n");
 }
 
 void read_DHT11()
