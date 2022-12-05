@@ -30,5 +30,11 @@ void loop()
     int numOfBytes = myLoRa.available();
     Serial.print("Number of incoming bytes");
     Serial.println(numOfBytes);
+    for (int i = 0; i < numOfBytes; i++){
+      data += myLoRa.read();
+    }
+    Serial.print("Data received: ");
+    Serial.println(data);
+    data = "";
   }
 }
