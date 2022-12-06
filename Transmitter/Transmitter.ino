@@ -58,11 +58,28 @@ void setup()
   } else {
     Serial.println(F("Error initialising BH1750"));
   }
-
+  delay(3000);
   // Begin LCD
   Wire.begin(19,21);
   lcd.begin();
   lcd.backlight();
+
+  lcd.setCursor(0,0);
+  lcd.print("ND:");
+  lcd.setCursor(10,0);
+  lcd.print("DA:");
+  lcd.setCursor(10,1);
+  lcd.print("AS:");
+  lcd.setCursor(0,1);
+  lcd.print("Auto:OFF");
+  lcd.setCursor(0,2);
+  lcd.print("Loa:OFF");
+  lcd.setCursor(10,2);
+  lcd.print("Quat:OFF");
+  lcd.setCursor(0,3);
+  lcd.print("Suong:OFF");
+  lcd.setCursor(10,3);
+  lcd.print("Suoi:OFF");
 }
 
 void loop()
@@ -136,7 +153,7 @@ void read_DHT11()
   lcd.setCursor(3, 0);
   lcd.print(NhietDo);
   lcd.printf(" oC");
-  lcd.setCursor(13, 0);
+  lcd.setCursor(10, 0);
   lcd.print(DoAm);
   lcd.printf(" %");
 
@@ -149,7 +166,7 @@ void read_BH1750(){
   Serial.println(" lx\n");
   //Firebase.setInt(dulieufirebase, "CuongDoAnhSang", lux);
 
-  lcd.setCursor(13, 1);
+  lcd.setCursor(3, 1);
   lcd.print(lux);
   lcd.printf(" lx");
 }
