@@ -3,7 +3,11 @@
 #include <Wire.h>
 #include <BH1750.h>
 #include <ArduinoJson.h>
+#include <LiquidCrystal_I2C.h>
 
+
+// LCD configuration
+LiquidCrystal_I2C lcd(0x27, 20, 4);
 
 // DHT configuration
 #define DHTPIN 2
@@ -54,6 +58,11 @@ void setup()
   } else {
     Serial.println(F("Error initialising BH1750"));
   }
+
+  // Begin LCD
+  Wire.begin(19,21);
+  lcd.begin();
+  lcd.backlight();
 }
 
 void loop()
@@ -124,6 +133,12 @@ void read_DHT11()
   
 //  Firebase.setInt(dulieufirebase, "Nhiet_Do", NhietDo);
 //  Firebase.setInt(dulieufirebase, "Do_Am", DoAm);
+  lcd.setCursor(3, 0);
+  lcd.print(NhietDo);
+  lcd.printf(" oC");
+  lcd.setCursor(13, 0);
+  lcd.print(DoAm);
+  lcd.printf(" %");
 
 }
 
@@ -133,4 +148,8 @@ void read_BH1750(){
   Serial.print(lux);
   Serial.println(" lx\n");
   //Firebase.setInt(dulieufirebase, "CuongDoAnhSang", lux);
+
+  lcd.setCursor(13, 1);
+  lcd.print(lux);
+  lcd.printf(" lx");
 }
