@@ -1,4 +1,8 @@
 #include <SoftwareSerial.h>
+#include <ArduinoJson.h>
+
+
+StaticJsonDocument<200> doc;
 
 const byte rxPin = 16;
 const byte txPin = 17;
@@ -11,6 +15,7 @@ unsigned long previousMillis = 0;
 unsigned long interval = 15000;
 
 char dataRcvd[200];
+int pos = 0;
 
 void setup()
 {
@@ -27,14 +32,37 @@ void setup()
 void loop()
 {
   if (myLoRa.available() > 0){
-    int numOfBytes = myLoRa.available();
-    Serial.print("Number of incoming bytes");
-    Serial.println(numOfBytes);
-    for (int i = 0; i < numOfBytes; i++){
-      data += myLoRa.read();
+    char inByte = myLoRa.read();
+    if (inByte == '\n'){
+      // process the char array
+      // Deserialize the JSON document
+      char json[pos-1];
+      for (int i = 0 ; i < pos; i++){
+        Serial.print(dataRcvd[i]);
+        json[i] = dataRcvd[i];
+      }
+      DeserializationError error = deserializeJson(doc, json);
+      // Test if parsing succeeds.
+      if (error) {
+        Serial.print(F("deserializeJson() failed: "));
+        Serial.println(error.f_str());
+        return;
+      }
+      // Fetch values.
+      int t = doc["t"];
+      int h = doc["h"];
+      int lux = doc["lux"];
+      // Print values.
+      Serial.println("--------------------\nReceived data:");
+      Serial.print("t = "); Serial.println(t);
+      Serial.print("h = "); Serial.println(h);
+      Serial.print("lux = "); Serial.println(lux);
+
+      // khoi tao lai char array
+      pos = 0;
+    } else {
+      dataRcvd[pos] = inByte;
+      pos++;
     }
-    Serial.print("Data received: ");
-    Serial.println(data);
-    data = "";
   }
 }

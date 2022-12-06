@@ -106,7 +106,7 @@ void sendData(){
   // Send Json data over LoRa
   serializeJson(doc, myLoRa);
   // Send EOL
-  myLoRa.write("\r\n");
+  myLoRa.write("\n");
 }
 
 void read_DHT11()
