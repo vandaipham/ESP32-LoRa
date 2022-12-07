@@ -81,7 +81,7 @@ void loop()
   //ds1307();
   dk_thietbi();
 
-  if (myLoRa.available() > 0){
+  while (myLoRa.available() > 0){
     char inByte = myLoRa.read();
     if (inByte == '\n'){
       // process the char array
@@ -181,7 +181,8 @@ void ds1307(){
 
 void dk_thietbi()
 {
-  if(millis() - times > 300){
+  unsigned long currentMillis = millis();
+  if(currentMillis - times > 1000){
     String AutoMode = getData("AutoMode");
 
     if(AutoMode == "false"){
@@ -350,6 +351,6 @@ void dk_thietbi()
         }
       }
     }*/
-    times=millis();
+    times = currentMillis;
   }
 }
