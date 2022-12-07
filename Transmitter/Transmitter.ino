@@ -91,7 +91,7 @@ void loop()
 {
   unsigned long currentMillis = millis();
 
-  if(currentMillis - previousMillis > interval) {
+  if((currentMillis - previousMillis > interval) & myLoRa.available() == 0) {
     /* The Arduino executes this code once every second
     *  (interval = 1000 (ms) = 1 second).
     */
@@ -109,6 +109,7 @@ void loop()
 
   while (myLoRa.available() > 0) {
     byte dataRcvd = myLoRa.read();
+    Serial.print("Recieved command: "); Serial.println(dataRcvd, HEX); Serial.println();
     switch(dataRcvd) {
       case 0x03:
         digitalWrite(mayphunsuongPin, 1); lcd.setCursor(0, 3); lcd.print("Suong: ON");
@@ -175,10 +176,9 @@ void read_DHT11()
   lcd.setCursor(3, 0);
   lcd.print(NhietDo);
   lcd.printf(" oC");
-  lcd.setCursor(10, 0);
+  lcd.setCursor(13, 0);
   lcd.print(DoAm);
   lcd.printf(" %");
-
 }
 
 void read_BH1750(){
