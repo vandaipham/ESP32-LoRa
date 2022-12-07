@@ -35,6 +35,11 @@ String data = "";
 unsigned long previousMillis = 0;
 unsigned long interval = 10000;
 
+// GPIO
+int loaPin = 33;
+int mayquatPin= 32;
+int mayphunsuongPin = 27;
+int maysuoiPin = 26;
 
 void setup()
 {
@@ -101,19 +106,36 @@ void loop()
     Serial.println("Data were sent!!\n");
     previousMillis = currentMillis;
   }
-/*
-  while (myLoRa.available() > 0){
-    char dataRcvd = myLoRa.read();
-    if (dataRcvd == '\n'){
-      Serial.println("End of message");
-    } else
-      data += dataRcvd;
+
+  while (myLoRa.available() > 0) {
+    byte dataRcvd = myLoRa.read();
+    switch(dataRcvd) {
+      case 0x03:
+        digitalWrite(mayphunsuongPin, 1); lcd.setCursor(0, 3); lcd.print("Suong: ON");
+        break;
+      case 0x04:
+        digitalWrite(mayphunsuongPin, 0); lcd.setCursor(0, 3); lcd.print("Suong:OFF");
+        break;
+      case 0x05:
+        digitalWrite(maysuoiPin, 1); lcd.setCursor(10, 3); lcd.print("Suoi: ON");
+        break;
+      case 0x06:
+        digitalWrite(maysuoiPin, 0); lcd.setCursor(10, 3); lcd.print("Suoi: OFF");
+        break;
+      case 0x07:
+        digitalWrite(mayquatPin, 1); lcd.setCursor(10, 2); lcd.print("Quat: ON");
+        break;
+      case 0x08:
+        digitalWrite(mayquatPin, 0); lcd.setCursor(10, 2); lcd.print("Quat:OFF");
+        break;
+      case 0x09:
+        digitalWrite(loaPin, 1); lcd.setCursor(0, 2); lcd.print("Loa: ON");
+        break;
+      case 0x0A:
+        digitalWrite(loaPin, 0); lcd.setCursor(0, 2); lcd.print("Loa: OFF");
+        break;
+    }
   }
-  if (data != ""){
-    Serial.println(data);
-    data = "";
-  }
-*/
 }
 
 void sendData(){
