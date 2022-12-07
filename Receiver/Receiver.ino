@@ -33,6 +33,8 @@ int pos = 0;
 void setup()
 {
   Serial.begin(9600);
+  while (!Serial) continue;
+  delay(5000);
 
   // Begin WiFi
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
@@ -81,7 +83,7 @@ void loop()
   //ds1307();
   //dk_thietbi();
   unsigned long currentMillis = millis();
-  if((currentMillis - previousMillis > interval) & myLoRa.available() == 0) {
+  if((currentMillis - previousMillis > interval)) {
     getCommands();
     previousMillis = currentMillis;
   }

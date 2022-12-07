@@ -85,13 +85,19 @@ void setup()
   lcd.print("Suong:OFF");
   lcd.setCursor(10,3);
   lcd.print("Suoi:OFF");
+
+  // GPIO setting
+  pinMode(loaPin,OUTPUT); digitalWrite(loaPin,0);
+  pinMode(mayquatPin,OUTPUT); digitalWrite(mayquatPin,0);
+  pinMode(maysuoiPin,OUTPUT); digitalWrite(maysuoiPin,0);
+  pinMode(mayphunsuongPin,OUTPUT); digitalWrite(mayphunsuongPin,0);
 }
 
 void loop()
 {
   unsigned long currentMillis = millis();
 
-  if((currentMillis - previousMillis > interval) & myLoRa.available() == 0) {
+  if((currentMillis - previousMillis > interval)) {
     /* The Arduino executes this code once every second
     *  (interval = 1000 (ms) = 1 second).
     */
