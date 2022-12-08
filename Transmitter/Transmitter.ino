@@ -41,6 +41,15 @@ int mayquatPin= 32;
 int mayphunsuongPin = 27;
 int maysuoiPin = 26;
 
+// AutoMode state
+int autoMode = 0;
+const int GH_NhietDo_LOW = 28;
+const int GH_NhietDo_High = 30;
+const int GH_DoAm_High = 80;
+const int GH_DoAm_LOW = 60;
+const int GH_AS_High = 50;
+const int GH_AS_Low = 30;
+
 void setup()
 {
   // Initialize Serial port
@@ -95,8 +104,10 @@ void setup()
 
 void loop()
 {
+  read_DHT11();
+  read_BH1750();
+  
   unsigned long currentMillis = millis();
-
   if((currentMillis - previousMillis > interval)) {
     /* The Arduino executes this code once every second
     *  (interval = 1000 (ms) = 1 second).
@@ -141,13 +152,58 @@ void loop()
       case 0x0A:
         digitalWrite(loaPin, 0); lcd.setCursor(0, 2); lcd.print("Loa: OFF");
         break;
+      case 0x01:
+        autoMode = 1;
+        lcd.setCursor(0,1); lcd.print("Auto: ON");
+        break;
+      case 0x02:
+        autoMode = 0;
+        lcd.setCursor(0,1); lcd.print("Auto:OFF");
+        break;
     }
+  }
+  if (autoMode == 1) {
+    lcd.setCursor(0,1); lcd.print("Auto: ON");
+    autoModeControl();
+  }
+}
+
+void autoModeControl(){
+  if ((DoAm > GH_DoAm_LOW) & (DoAm < GH_DoAm_High)) {
+    if ((NhietDo > GH_NhietDo_LOW) & (NhietDo < GH_NhietDo_High)) {
+      digitalWrite(mayphunsuongPin, 0); lcd.setCursor(0, 3); lcd.print("Suong:OFF");
+      digitalWrite(maysuoiPin, 0); lcd.setCursor(10, 3); lcd.print("Suoi:OFF");
+      digitalWrite(mayquatPin, 0);lcd.setCursor(10, 2); lcd.print("Quat:OFF");
+      Serial.print("Nhiet do on dinh"); Serial.println();        
+    }
+    else if(NhietDo >= GH_NhietDo_High) {
+      digitalWrite(mayphunsuongPin, 1); lcd.setCursor(0, 3); lcd.print("Suong: ON");
+      digitalWrite(maysuoiPin, 0); lcd.setCursor(10, 3); lcd.print("Suoi:OFF");
+      digitalWrite(mayquatPin, 0);lcd.setCursor(10, 2); lcd.print("Quat:OFF");
+      Serial.print("Nhiet do cao"); Serial.println();     
+    }
+    else {
+      digitalWrite(mayphunsuongPin, 0); lcd.setCursor(0, 3); lcd.print("Suong:OFF");
+      digitalWrite(maysuoiPin, 1); lcd.setCursor(10, 3); lcd.print("Suoi: ON");
+      digitalWrite(mayquatPin, 0);lcd.setCursor(10, 2); lcd.print("Quat:OFF"); 
+      Serial.print("Nhiet do thap"); Serial.println();           
+    }
+  }
+  else if (DoAm >= GH_DoAm_High) {
+    digitalWrite(mayphunsuongPin, 0); lcd.setCursor(0, 3); lcd.print("Suong:OFF");
+    digitalWrite(maysuoiPin, 0); lcd.setCursor(10, 3); lcd.print("Suoi:OFF");
+    digitalWrite(mayquatPin, 1);lcd.setCursor(10, 2); lcd.print("Quat: ON");
+    Serial.print("Do Am cao"); Serial.println();    
+  }
+  else {
+    digitalWrite(mayphunsuongPin, 1); lcd.setCursor(0, 3); lcd.print("Suong: ON");
+    digitalWrite(maysuoiPin, 0); lcd.setCursor(10, 3); lcd.print("Suoi:OFF");
+    digitalWrite(mayquatPin, 0); lcd.setCursor(10, 2); lcd.print("Quat:OFF");  
+    Serial.print("Do am thap"); Serial.println();       
   }
 }
 
 void sendData(){
-  read_DHT11();
-  read_BH1750();
   // Add values in the document
   doc["h"] = DoAm;
   doc["t"] = NhietDo;

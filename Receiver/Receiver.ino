@@ -366,6 +366,7 @@ void getCommands(){
   String AutoMode = getData("AutoMode");
 
   if(AutoMode == "false"){
+    myLoRa.write(0x02);
     //lcd.setCursor(0,1); lcd.print("Auto:OFF");
     for(int i=0; i<100; ++i);
     String Mayphunsuong = getData("Mayphunsuong");
@@ -436,7 +437,11 @@ void getCommands(){
     else if(Donglen == "false" & Haxuong == "false") {digitalWrite(keomanchelen,0);digitalWrite(keomanchexuong,0); } 
     else if(Donglen == "false" & Haxuong == "true") {digitalWrite(keomanchelen,0); digitalWrite(keomanchexuong,1);}
     else { Serial.println("Wrong Credential! Please send ON/OFF");}*/
-  }/*
+  }
+  else if (AutoMode == "true") {
+    myLoRa.write(0x01);
+  }
+  /*
     else if(AutoMode == "true") 
     {
       // lcd.setCursor(0,1); lcd.print("Auto: ON");
