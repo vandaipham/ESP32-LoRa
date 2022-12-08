@@ -2,7 +2,11 @@
 #include <ArduinoJson.h>
 #include <FirebaseESP32.h>
 #include <WiFi.h>
+#include <ESP32Time.h>
 
+//ESP32Time rtc
+ESP32Time rtc(25200);  // offset in seconds GMT+7
+uint8_t hours;
 
 // WiFi configuration
 #define WIFI_SSID "IphoneXr"                                          // input your home or public wifi name
@@ -76,10 +80,12 @@ void setup()
   myLoRa.begin(9600);
 
   // Setting Time
+  rtc.setTime(0, 30, 21, 8, 12, 2022);  // 8th Dec 2022 21:30:00
 }
 
 void loop()
 {
+  getHour();
   unsigned long currentMillis = millis();
   if((currentMillis - previousMillis > interval)) {
     getCommands();
@@ -234,5 +240,74 @@ void getCommands(){
   }
   else if (AutoMode == "true") {
     myLoRa.write(0x01);
+
+    for(int i=0; i<1000; ++i);
+    String Hen_gio_bat_loa = getData("Giobatloa");
+    String Hen_gio_tat_loa = getData("Giotatloa");
+    if(xuli1(Hen_gio_bat_loa) > xuli1(Hen_gio_tat_loa))
+    {
+      if(hours >= xuli1(Hen_gio_tat_loa) && hours < xuli1(Hen_gio_bat_loa)) 
+      {
+        // digitalWrite(loaPin,0); lcd.setCursor(0,2); lcd.print("Loa:OFF");
+        myLoRa.write(0x0A);
+      }
+      else
+      {
+        // digitalWrite(loaPin,1); lcd.setCursor(0,2); lcd.print("Loa: ON");
+        myLoRa.write(0x09);
+      }
+    }
+    else
+    {
+      if(hours >= xuli1(Hen_gio_bat_loa) & hours < xuli1(Hen_gio_tat_loa))
+      {
+        // digitalWrite(loaPin,1); lcd.setCursor(0,2); lcd.print("Loa: ON");
+        myLoRa.write(0x09);
+      }
+      else
+      {
+        // digitalWrite(loaPin,0); lcd.setCursor(0,2); lcd.print("Loa:OFF");
+        myLoRa.write(0x0A);
+      }
+    }
+
   }
+}
+
+void getHour(){
+  hours = rtc.getHour(true);
+  Serial.print("hours is: ");
+  Serial.println(hours);
+}
+
+String xuli(String str)
+{
+  int len = str.length();
+  for(int i=1;i<3;i++)
+  {
+    str[len-i] = '\0';
+  }
+  int len1 = str.length();
+  for(int i=0;i<len1;i++)
+  {   
+    if(i<len1-2){
+      str[i] = str[i+2];
+    }
+    else
+    {
+      str[i] = '\0';
+    }
+  }
+  Serial.println(str);
+  return str;
+}
+
+int xuli1(String a) {
+  int c = xuli(a).length()-3;
+  char array_1[c];
+  xuli(a).toCharArray(array_1,c);
+  int d = atoi(array_1);
+  Serial.println(array_1);
+  Serial.println(d);
+  return d;
 }
