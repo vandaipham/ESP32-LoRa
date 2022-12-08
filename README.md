@@ -8,3 +8,7 @@ Get commands:
 * Maysuoi (true or false) - 0x05 or 0x06
 * Mayquat (true or false) - 0x07 or 0x08
 * Loa (true or false) - 0x09 or 0x0A
+* keomanchelen vs keomanchexuong 
+* Donglen == "true" & Haxuong == "false" - 0x0B
+* Donglen == "false" & Haxuong == "false" - 0x0C
+* Donglen == "false" & Haxuong == "true" - 0x0D

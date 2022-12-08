@@ -56,8 +56,8 @@ void setup()
   setData("Maysuoi", "false");
   setData("Mayquat", "false");
   setData("Loa", "false");
-  // setData("Keo_man_che_len","false");
-  // setData("Keo_man_che_xuong","false");  
+  setData("Keo_man_che_len","false");
+  setData("Keo_man_che_xuong","false");  
   setData("AutoMode", "false");
   setData("GH_NhietDo_LOW", "28");
   setData("GH_NhietDo_High", "30");
@@ -80,8 +80,6 @@ void setup()
 
 void loop()
 {
-  //ds1307();
-  //dk_thietbi();
   unsigned long currentMillis = millis();
   if((currentMillis - previousMillis > interval)) {
     getCommands();
@@ -144,222 +142,6 @@ String getData(String url){
   Firebase.getString(dulieufirebase, url);
   String data1 = dulieufirebase.stringData();
   return data1;
-}
-
-String xuli(String str)
-{
-  int len = str.length();
-  for(int i=1; i<3; i++)
-  {
-    str[len-i] = '\0';
-  }
-  int len1 = str.length();
-  for(int i=0; i < len1; i++)
-  {   
-    if(i < len1-2){
-    str[i] = str[i+2];
-    } else {
-        str[i] = '\0';
-    }
-  }
-  Serial.println(str);
-  return str;
-}
- 
-int xuli1(String a)
-{
-  int c = xuli(a).length()-3;
-  char array_1[c];
-  xuli(a).toCharArray(array_1,c);
-  int d = atoi(array_1);
-  Serial.println(array_1);
-  Serial.println(d);
-  return d;
-}
-
-/*
-void ds1307(){
-  hours = RTC.getHours();
-  Serial.print("hours is: ");
-
-  Serial.println(hours);
-}
-*/
-
-void dk_thietbi()
-{
-  unsigned long currentMillis = millis();
-  if(currentMillis - times > 1000){
-    String AutoMode = getData("AutoMode");
-
-    if(AutoMode == "false"){
-      //lcd.setCursor(0,1); lcd.print("Auto:OFF");
-      for(int i=0; i<100; ++i);
-      String Mayphunsuong = getData("Mayphunsuong");
-      if (Mayphunsuong == "true"){
-        myLoRa.write(0x03);
-        //digitalWrite(mayphunsuongPin, 1);
-        // lcd.setCursor(0,3);
-        // lcd.print("Suong: ON");
-      } else if(Mayphunsuong == "false"){
-        myLoRa.write(0x04);
-        // digitalWrite(mayphunsuongPin, 0);
-        // lcd.setCursor(0,3);
-        // lcd.print("Suong:OFF");
-      } else {
-        Serial.println("Wrong Credential! Please send ON/OFF");
-        // lcd.setCursor(0,3);lcd.print("Suong:OFF");
-      }
-
-      for(int i=0; i<100; ++i);
-      String Maysuoi = getData("Maysuoi");
-      if(Maysuoi == "true") {
-        myLoRa.write(0x05);
-        // digitalWrite(maysuoiPin, 1);
-        // lcd.setCursor(10,3); lcd.print("Suoi: ON");
-      } else if(Maysuoi == "false") {
-        myLoRa.write(0x06);
-        // digitalWrite(maysuoiPin,0);
-        // lcd.setCursor(10,3); lcd.print("Suoi:OFF");
-      } else {
-      Serial.println("Wrong Credential! Please send ON/OFF");
-      // lcd.setCursor(10,3); lcd.print("Suoi:OFF");
-      }
-      for(int i=0; i<100; ++i);
-
-      String Mayquat = getData("Mayquat");
-      if(Mayquat == "true") {
-        myLoRa.write(0x07);
-        // digitalWrite(mayquatPin,1);
-        // lcd.setCursor(10,2); lcd.print("Quat: ON");
-      } else if(Mayquat == "false") {
-        myLoRa.write(0x08);
-        // digitalWrite(mayquatPin,0);
-        // lcd.setCursor(10,2); lcd.print("Quat:OFF"); 
-      } else { 
-        Serial.println("Wrong Credential! Please send ON/OFF");
-        // lcd.setCursor(10,2); lcd.print("Quat:OFF");
-      }
-
-      for(int i=0; i<100; ++i);
-      String Loa = getData("Loa");
-      if(Loa == "true") {
-        myLoRa.write(0x09);
-        // digitalWrite(loaPin,1);
-        // lcd.setCursor(0,2); lcd.print("Loa: ON");
-      } else if(Loa == "false") {
-        myLoRa.write(0x0A);
-        // digitalWrite(loaPin,0);
-        // lcd.setCursor(0,2); lcd.print("Loa:OFF");
-      }  
-      else {
-        Serial.println("Wrong Credential! Please send ON/OFF");
-        myLoRa.write(0x0A);
-        // digitalWrite(loaPin,0); lcd.setCursor(0,2); lcd.print("Loa:OFF");
-      }   
-    /*for(int i=0; i<1000; ++i);
-    String Donglen = getData("Keo_man_che_len");
-    String Haxuong = getData("Keo_man_che_xuong");
-    if(Donglen == "true" & Haxuong == "false") {digitalWrite(keomanchelen,1); digitalWrite(keomanchexuong,0);}
-    else if(Donglen == "false" & Haxuong == "false") {digitalWrite(keomanchelen,0);digitalWrite(keomanchexuong,0); } 
-    else if(Donglen == "false" & Haxuong == "true") {digitalWrite(keomanchelen,0); digitalWrite(keomanchexuong,1);}
-    else { Serial.println("Wrong Credential! Please send ON/OFF");}*/
-    }/*
-    else if(AutoMode == "true") 
-    {
-      // lcd.setCursor(0,1); lcd.print("Auto: ON");
-      for(int i=0; i<100; ++i);
-      String GH_DoAm_High = getData("GH_DoAm_High");
-      String GH_DoAm_Low = getData("GH_DoAm_LOW");
-      if(DoAm > xuli1(GH_DoAm_Low) && DoAm < xuli1(GH_DoAm_High))
-      {
-        for(int i=0; i<1000; ++i);
-        String GH_NhietDo_Low = getData("GH_NhietDo_LOW");
-        String GH_NhietDo_High = getData("GH_NhietDo_High");
-        if(NhietDo > xuli1(GH_NhietDo_Low) && NhietDo < xuli1(GH_NhietDo_High))
-        {
-          // digitalWrite(mayphunsuongPin,0); lcd.setCursor(0,3); lcd.print("Suong:OFF");
-          // digitalWrite(maysuoiPin,0); lcd.setCursor(10,3); lcd.print("Suoi:OFF");
-          // digitalWrite(mayquatPin,0); lcd.setCursor(10,2); lcd.print("Quat:OFF");
-          myLoRa.write(0x04); delay(100);
-          myLoRa.write(0x06); delay(100);
-          myLoRa.write(0x08); delay(100);
-          Serial.print("Nhiet do on dinh"); Serial.println();
-        }
-        else if(NhietDo >= xuli1(GH_NhietDo_High))
-        {
-          // digitalWrite(mayphunsuongPin,1); lcd.setCursor(0,3); lcd.print("Suong: ON");
-          // digitalWrite(maysuoiPin,0); lcd.setCursor(10,3); lcd.print("Suoi:OFF");
-          // digitalWrite(mayquatPin,0);lcd.setCursor(10,2); lcd.print("Quat:OFF");
-          myLoRa.write(0x03); delay(100);
-          myLoRa.write(0x06); delay(100);
-          myLoRa.write(0x08); delay(100);
-          Serial.print("Nhiet do cao"); Serial.println();     
-        }
-        else
-        {
-          // digitalWrite(mayphunsuongPin,0); lcd.setCursor(0,3); lcd.print("Suong:OFF");
-          // digitalWrite(maysuoiPin,1); lcd.setCursor(10,3); lcd.print("Suoi: ON");
-          // digitalWrite(mayquatPin,0);lcd.setCursor(10,2); lcd.print("Quat:OFF");
-          myLoRa.write(0x04); delay(100);
-          myLoRa.write(0x05); delay(100);
-          myLoRa.write(0x08); delay(100);
-          Serial.print("Nhiet do thap"); Serial.println();
-        }
-      }
-      else if(DoAm >= xuli1(GH_DoAm_High))
-      {
-        // digitalWrite(mayphunsuongPin,0); lcd.setCursor(0,3); lcd.print("Suong:OFF");
-        // digitalWrite(maysuoiPin,0); lcd.setCursor(10,3); lcd.print("Suoi:OFF");
-        // digitalWrite(mayquatPin,1);lcd.setCursor(10,2); lcd.print("Quat: ON");
-        myLoRa.write(0x04); delay(100);
-        myLoRa.write(0x06); delay(100);
-        myLoRa.write(0x07); delay(100);
-        Serial.print("Do Am cao"); Serial.println();
-      }
-      else
-      {
-        // digitalWrite(mayphunsuongPin,1); lcd.setCursor(0,3); lcd.print("Suong: ON");
-        // digitalWrite(maysuoiPin,0); lcd.setCursor(10,3); lcd.print("Suoi:OFF");
-        // digitalWrite(mayquatPin,0);lcd.setCursor(10,2); lcd.print("Quat:OFF");  
-        myLoRa.write(0x03); delay(100);
-        myLoRa.write(0x06); delay(100);
-        myLoRa.write(0x08); delay(100);
-        Serial.print("Do am thap"); Serial.println();       
-      }
-
-      for(int i=0; i<1000; ++i);
-      String Hen_gio_bat_loa = getData("Giobatloa");
-      String Hen_gio_tat_loa = getData("Giotatloa");
-      if (xuli1(Hen_gio_bat_loa) > xuli1(Hen_gio_tat_loa))
-      {
-        if(hours >= xuli1(Hen_gio_tat_loa) && hours < xuli1(Hen_gio_bat_loa)) 
-        {
-          // digitalWrite(loaPin, 0); lcd.setCursor(0,2); lcd.print("Loa: OFF");    
-          myLoRa.write(0x0A);
-        }
-        else
-        {
-          // digitalWrite(loaPin, 1); lcd.setCursor(0,2); lcd.print("Loa: ON");
-          myLoRa.write(0x09);
-        }
-      }
-      else
-      {
-        if(hours >= xuli1(Hen_gio_bat_loa) & hours < xuli1(Hen_gio_tat_loa))
-        {
-          // digitalWrite(loaPin,1); lcd.setCursor(0,2); lcd.print("Loa: ON");
-          myLoRa.write(0x09);
-        }
-        else
-        {
-          // digitalWrite(loaPin,0); lcd.setCursor(0,2); lcd.print("Loa:OFF");
-          myLoRa.write(0x0A);
-        }
-      }
-    }*/
-    times = currentMillis;
-  }
 }
 
 void getCommands(){
@@ -429,110 +211,28 @@ void getCommands(){
     else {
       Serial.println("Wrong Credential! Please send ON/OFF");
       // digitalWrite(loaPin,0); lcd.setCursor(0,2); lcd.print("Loa:OFF");
-    }   
-    /*for(int i=0; i<1000; ++i);
+    }
+
+    for(int i=0; i<1000; ++i);
     String Donglen = getData("Keo_man_che_len");
     String Haxuong = getData("Keo_man_che_xuong");
-    if(Donglen == "true" & Haxuong == "false") {digitalWrite(keomanchelen,1); digitalWrite(keomanchexuong,0);}
-    else if(Donglen == "false" & Haxuong == "false") {digitalWrite(keomanchelen,0);digitalWrite(keomanchexuong,0); } 
-    else if(Donglen == "false" & Haxuong == "true") {digitalWrite(keomanchelen,0); digitalWrite(keomanchexuong,1);}
-    else { Serial.println("Wrong Credential! Please send ON/OFF");}*/
+    if(Donglen == "true" & Haxuong == "false") {
+      // digitalWrite(keomanchelen,1); digitalWrite(keomanchexuong,0);
+      myLoRa.write(0x0B);
+    }
+    else if(Donglen == "false" & Haxuong == "false") {
+      // digitalWrite(keomanchelen,0); digitalWrite(keomanchexuong,0);
+      myLoRa.write(0x0C);
+    }
+    else if(Donglen == "false" & Haxuong == "true") {
+      // digitalWrite(keomanchelen,0); digitalWrite(keomanchexuong,1);
+      myLoRa.write(0x0D);
+    }
+    else {
+      Serial.println("Wrong Credential! Please send ON/OFF");
+    }
   }
   else if (AutoMode == "true") {
     myLoRa.write(0x01);
   }
-  /*
-    else if(AutoMode == "true") 
-    {
-      // lcd.setCursor(0,1); lcd.print("Auto: ON");
-      for(int i=0; i<100; ++i);
-      String GH_DoAm_High = getData("GH_DoAm_High");
-      String GH_DoAm_Low = getData("GH_DoAm_LOW");
-      if(DoAm > xuli1(GH_DoAm_Low) && DoAm < xuli1(GH_DoAm_High))
-      {
-        for(int i=0; i<1000; ++i);
-        String GH_NhietDo_Low = getData("GH_NhietDo_LOW");
-        String GH_NhietDo_High = getData("GH_NhietDo_High");
-        if(NhietDo > xuli1(GH_NhietDo_Low) && NhietDo < xuli1(GH_NhietDo_High))
-        {
-          // digitalWrite(mayphunsuongPin,0); lcd.setCursor(0,3); lcd.print("Suong:OFF");
-          // digitalWrite(maysuoiPin,0); lcd.setCursor(10,3); lcd.print("Suoi:OFF");
-          // digitalWrite(mayquatPin,0); lcd.setCursor(10,2); lcd.print("Quat:OFF");
-          myLoRa.write(0x04); delay(100);
-          myLoRa.write(0x06); delay(100);
-          myLoRa.write(0x08); delay(100);
-          Serial.print("Nhiet do on dinh"); Serial.println();
-        }
-        else if(NhietDo >= xuli1(GH_NhietDo_High))
-        {
-          // digitalWrite(mayphunsuongPin,1); lcd.setCursor(0,3); lcd.print("Suong: ON");
-          // digitalWrite(maysuoiPin,0); lcd.setCursor(10,3); lcd.print("Suoi:OFF");
-          // digitalWrite(mayquatPin,0);lcd.setCursor(10,2); lcd.print("Quat:OFF");
-          myLoRa.write(0x03); delay(100);
-          myLoRa.write(0x06); delay(100);
-          myLoRa.write(0x08); delay(100);
-          Serial.print("Nhiet do cao"); Serial.println();     
-        }
-        else
-        {
-          // digitalWrite(mayphunsuongPin,0); lcd.setCursor(0,3); lcd.print("Suong:OFF");
-          // digitalWrite(maysuoiPin,1); lcd.setCursor(10,3); lcd.print("Suoi: ON");
-          // digitalWrite(mayquatPin,0);lcd.setCursor(10,2); lcd.print("Quat:OFF");
-          myLoRa.write(0x04); delay(100);
-          myLoRa.write(0x05); delay(100);
-          myLoRa.write(0x08); delay(100);
-          Serial.print("Nhiet do thap"); Serial.println();
-        }
-      }
-      else if(DoAm >= xuli1(GH_DoAm_High))
-      {
-        // digitalWrite(mayphunsuongPin,0); lcd.setCursor(0,3); lcd.print("Suong:OFF");
-        // digitalWrite(maysuoiPin,0); lcd.setCursor(10,3); lcd.print("Suoi:OFF");
-        // digitalWrite(mayquatPin,1);lcd.setCursor(10,2); lcd.print("Quat: ON");
-        myLoRa.write(0x04); delay(100);
-        myLoRa.write(0x06); delay(100);
-        myLoRa.write(0x07); delay(100);
-        Serial.print("Do Am cao"); Serial.println();
-      }
-      else
-      {
-        // digitalWrite(mayphunsuongPin,1); lcd.setCursor(0,3); lcd.print("Suong: ON");
-        // digitalWrite(maysuoiPin,0); lcd.setCursor(10,3); lcd.print("Suoi:OFF");
-        // digitalWrite(mayquatPin,0);lcd.setCursor(10,2); lcd.print("Quat:OFF");  
-        myLoRa.write(0x03); delay(100);
-        myLoRa.write(0x06); delay(100);
-        myLoRa.write(0x08); delay(100);
-        Serial.print("Do am thap"); Serial.println();       
-      }
-
-      for(int i=0; i<1000; ++i);
-      String Hen_gio_bat_loa = getData("Giobatloa");
-      String Hen_gio_tat_loa = getData("Giotatloa");
-      if (xuli1(Hen_gio_bat_loa) > xuli1(Hen_gio_tat_loa))
-      {
-        if(hours >= xuli1(Hen_gio_tat_loa) && hours < xuli1(Hen_gio_bat_loa)) 
-        {
-          // digitalWrite(loaPin, 0); lcd.setCursor(0,2); lcd.print("Loa: OFF");    
-          myLoRa.write(0x0A);
-        }
-        else
-        {
-          // digitalWrite(loaPin, 1); lcd.setCursor(0,2); lcd.print("Loa: ON");
-          myLoRa.write(0x09);
-        }
-      }
-      else
-      {
-        if(hours >= xuli1(Hen_gio_bat_loa) & hours < xuli1(Hen_gio_tat_loa))
-        {
-          // digitalWrite(loaPin,1); lcd.setCursor(0,2); lcd.print("Loa: ON");
-          myLoRa.write(0x09);
-        }
-        else
-        {
-          // digitalWrite(loaPin,0); lcd.setCursor(0,2); lcd.print("Loa:OFF");
-          myLoRa.write(0x0A);
-        }
-      }
-    }*/
 }

@@ -40,6 +40,8 @@ int loaPin = 33;
 int mayquatPin= 32;
 int mayphunsuongPin = 27;
 int maysuoiPin = 26;
+int keomanchelen = 4;
+int keomanchexuong = 12;
 
 // AutoMode state
 int autoMode = 0;
@@ -100,13 +102,15 @@ void setup()
   pinMode(mayquatPin,OUTPUT); digitalWrite(mayquatPin,0);
   pinMode(maysuoiPin,OUTPUT); digitalWrite(maysuoiPin,0);
   pinMode(mayphunsuongPin,OUTPUT); digitalWrite(mayphunsuongPin,0);
+  pinMode(keomanchelen,OUTPUT);
+  pinMode(keomanchexuong,OUTPUT);
 }
 
 void loop()
 {
   read_DHT11();
   read_BH1750();
-  
+
   unsigned long currentMillis = millis();
   if((currentMillis - previousMillis > interval)) {
     /* The Arduino executes this code once every second
@@ -160,6 +164,15 @@ void loop()
         autoMode = 0;
         lcd.setCursor(0,1); lcd.print("Auto:OFF");
         break;
+      case 0x0B:
+        digitalWrite(keomanchelen,1); digitalWrite(keomanchexuong,0);
+        break;
+      case 0x0C:
+        digitalWrite(keomanchelen,0); digitalWrite(keomanchexuong,0);
+        break;
+      case 0x0D:
+        digitalWrite(keomanchelen,0); digitalWrite(keomanchexuong,1);
+        break;
     }
   }
   if (autoMode == 1) {
@@ -200,6 +213,15 @@ void autoModeControl(){
     digitalWrite(maysuoiPin, 0); lcd.setCursor(10, 3); lcd.print("Suoi:OFF");
     digitalWrite(mayquatPin, 0); lcd.setCursor(10, 2); lcd.print("Quat:OFF");  
     Serial.print("Do am thap"); Serial.println();       
+  }
+  if ((GH_AS_High > lux) & (GH_AS_Low < lux)) {
+    digitalWrite(keomanchelen,0); digitalWrite(keomanchexuong,0);
+  }
+  else if(GH_AS_High <= lux) {
+    digitalWrite(keomanchelen,0); digitalWrite(keomanchexuong,1);
+  }
+  else if(GH_AS_Low >= lux ) {
+    digitalWrite(keomanchelen,1); digitalWrite(keomanchexuong,0);
   }
 }
 
