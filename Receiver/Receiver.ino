@@ -2,10 +2,10 @@
 #include <ArduinoJson.h>
 #include <FirebaseESP32.h>
 #include <WiFi.h>
-#include <ESP32Time.h>
+#include <Wire.h>
+#include <TimeLib.h>
+#include <DS1307RTC.h>
 
-//ESP32Time rtc
-ESP32Time rtc(25200);  // offset in seconds GMT+7
 uint8_t hours;
 
 // WiFi configuration
@@ -79,8 +79,6 @@ void setup()
   // Set the baud rate for the LoRa module
   myLoRa.begin(9600);
 
-  // Setting Time
-  rtc.setTime(0, 30, 21, 8, 12, 2022);  // 8th Dec 2022 21:30:00
 }
 
 void loop()
@@ -275,9 +273,21 @@ void getCommands(){
 }
 
 void getHour(){
-  hours = rtc.getHour(true);
-  Serial.print("hours is: ");
-  Serial.println(hours);
+  tmElements_t tm;
+  if (RTC.read(tm)) {
+    Serial.print("Ok, Time = ");
+    Serial.println(tm.Hour);
+    hours = tm.Hour;
+  } else {
+    if (RTC.chipPresent()) {
+      Serial.println("The DS1307 is stopped.  Please run the SetTime");
+      Serial.println("example to initialize the time and begin running.");
+      Serial.println();
+    } else {
+      Serial.println("DS1307 read error!  Please check the circuitry.");
+      Serial.println();
+    }
+  }
 }
 
 String xuli(String str)
